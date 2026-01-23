@@ -1,0 +1,35 @@
+# Core
+python-dotenv>=1.0.0
+pydantic>=2.6.0
+
+# MQTT
+paho-mqtt>=1.6.1
+asyncio-mqtt>=0.16.0
+
+# Backend / API
+fastapi>=0.110.0
+uvicorn>=0.29.0
+requests>=2.31.0
+
+# Dados
+numpy>=1.26.0
+pandas>=2.2.0
+
+# Persistência
+sqlalchemy>=2.0.0
+
+# Machine Learning
+scikit-learn>=1.4.0
+
+# Logs
+loguru>=0.7.2
+
+# IA / agentes
+openai-agents
+tiktoken>=0.6.0
+
+# Banco de dados
+
+psycopg==3.3.2
+psycopg==3.3.2
+psycopg-binary==3.3.2
