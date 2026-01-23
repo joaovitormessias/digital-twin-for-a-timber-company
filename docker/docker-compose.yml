@@ -1,0 +1,137 @@
+
+networks:
+  digital_twin_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  grafana_data:
+  tb_data:
+
+services:
+
+  # -----------------------------
+  # MQTT Broker
+  # -----------------------------
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mosquitto
+    ports:
+      - "1884:1883"
+      - "9001:9001"
+    volumes:
+      - ./services/mosquitto/mosquito.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - digital_twin_net
+    restart: unless-stopped
+
+  # -----------------------------
+  # ThingsBoard (Digital Twin)
+  # -----------------------------
+  thingsboard:
+    image: thingsboard/tb-postgres:latest
+    container_name: thingsboard
+    depends_on:
+      - mosquitto
+    ports:
+      - "8080:9090"
+      - "1885:1883"
+      - "7070:7070"
+      - "5683-5688:5683-5688/udp"
+    environment:
+      TB_QUEUE_TYPE: in-memory
+    volumes:
+      - tb_data:/data
+    networks:
+      - digital_twin_net
+    restart: unless-stopped
+
+  # -----------------------------
+  # PostgreSQL
+  # -----------------------------
+  postgres:
+    image: postgres:16
+    container_name: digital_twin_db
+    environment:
+      POSTGRES_DB: digital_twin
+      POSTGRES_USER: twin
+      POSTGRES_PASSWORD: twinpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - digital_twin_net
+    restart: unless-stopped
+
+  # -----------------------------
+  # Grafana
+  # -----------------------------
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - postgres
+    networks:
+      - digital_twin_net
+    restart: unless-stopped
+
+  # -----------------------------
+  # Backend (API )
+  # -----------------------------
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: backend
+    ports:
+      - "8000:8000"
+    environment:
+      # ThingsBoard (dentro da rede Docker)
+      TB_URL: "http://thingsboard:9090"
+      TB_USERNAME: "admin@tenant.org"
+      TB_PASSWORD: "123456"
+      TB_DEVICE_NAME: "serra_01"
+
+      #  Postgres (PERSISTÊNCIA)
+      DATABASE_URL: "postgresql://twin:twinpass@postgres:5432/digital_twin"
+
+      #  OpenAI Agents
+      OPENAI_API_KEY: "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"
+
+    depends_on:
+      - postgres
+      - thingsboard
+    networks:
+      - digital_twin_net
+    restart: unless-stopped
+
+# ------------------------------
+# Gazebo ( 3D )
+# ------------------------------ 
+  gazebo:
+    build:
+      context: ..
+      dockerfile: gazebo/Dockerfile
+    container_name: gazebo_sim
+    ports:
+      - "9002:9002"
+    volumes:
+      - ../gazebo:/ws/gazebo
+    environment:
+      # Faz o model://conveyor, model://saw, etc funcionar
+      GZ_SIM_RESOURCE_PATH: /ws/gazebo/models:/ws/gazebo/models/worlds
+      IGN_GAZEBO_RESOURCE_PATH: /ws/gazebo/models:/ws/gazebo/models/worlds
+    command: ["bash", "-lc", "gz sim -s -r /ws/gazebo/models/worlds/sawmill.world"]
+    networks:
+      - digital_twin_net
+    depends_on:
+      - mosquitto
+      - thingsboard
