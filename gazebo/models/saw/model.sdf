@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <model name="saw">
+    <static>true</static>
+    <link name="link">
+      <visual name="base">
+        <geometry>
+          <box><size>1 0.6 0.3</size></box>
+        </geometry>
+      </visual>
+
+      <visual name="blade">
+        <pose>0 0 0.35 0 0 0</pose>
+        <geometry>
+          <cylinder><radius>0.25</radius><length>0.02</length></cylinder>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

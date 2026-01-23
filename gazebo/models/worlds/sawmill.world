@@ -1,0 +1,135 @@
+
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <world name="axisai">
+
+    <!-- Cena / iluminação ambiente (ajuda muito o viewer não ficar "cinza") -->
+    <scene>
+      <ambient>0.6 0.6 0.6 1</ambient>
+      <background>0.85 0.90 0.95 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <!-- Luz direcional simples (sem depender de model://sun) -->
+    <light name="sun" type="directional">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <direction>-0.5 -0.2 -1</direction>
+      <diffuse>1 1 1 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+    </light>
+
+    <!-- Chão simples (sem depender de model://ground_plane) -->
+    <model name="ground_plane">
+      <static>true</static>
+      <pose>0 0 0 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>200 200</size>
+            </plane>
+          </geometry>
+        </collision>
+
+        <!-- visual com material pra não "sumir" -->
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>200 200</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.25 0.25 0.25 1</ambient>
+            <diffuse>0.45 0.45 0.45 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Conveyor (placeholder) -->
+    <model name="conveyor">
+      <static>true</static>
+      <pose>0 0 0.15 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>4 1 0.3</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>4 1 0.3</size></box>
+          </geometry>
+          <material>
+            <ambient>0.10 0.10 0.10 1</ambient>
+            <diffuse>0.15 0.15 0.15 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Saw (placeholder) -->
+    <model name="saw">
+      <static>true</static>
+      <pose>2 0 0.35 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.35</radius>
+              <length>0.06</length>
+            </cylinder>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.35</radius>
+              <length>0.06</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.20 0.20 0.22 1</ambient>
+            <diffuse>0.55 0.55 0.60 1</diffuse>
+            <specular>0.25 0.25 0.25 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Wood piece (placeholder) -->
+    <model name="wood_piece_1">
+      <static>true</static>
+      <pose>-1 0 0.25 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>0.6 0.25 0.12</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.6 0.25 0.12</size></box>
+          </geometry>
+          <material>
+            <ambient>0.25 0.18 0.10 1</ambient>
+            <diffuse>0.55 0.38 0.20 1</diffuse>
+            <specular>0.05 0.05 0.05 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Websocket server p/ conectar o app.gazebosim.org -->
+    <plugin
+      filename="libgz-sim-websocket-server-system.so"
+      name="gz::sim::systems::WebsocketServer">
+      <port>9002</port>
+    </plugin>
+
+  </world>
+</sdf>
