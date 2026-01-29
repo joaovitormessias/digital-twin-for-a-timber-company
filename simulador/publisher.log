@@ -1,0 +1,2 @@
+/home/user/Work/MER/digital-twin/simulador/publisher_mqtt.py:13: DeprecationWarning: Callback API version 1 is deprecated, update to latest version
+  client = mqtt.Client()
