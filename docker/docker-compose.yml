@@ -104,7 +104,7 @@ services:
       DATABASE_URL: "postgresql://twin:twinpass@postgres:5432/digital_twin"
 
       #  OpenAI Agents
-      OPENAI_API_KEY: "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"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
 
     depends_on:
       - postgres
