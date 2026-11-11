@@ -36,7 +36,7 @@ Base URL for local evaluation: `http://localhost:8000`. FastAPI's interactive do
 
 No API authentication is implemented. The configured subscriber polls one device; passing another name does not start a new subscriber.
 
-`ts` is a Unix timestamp in milliseconds. Before ingestion, `/status` may return a null timestamp, empty values, and health OK. That is not evidence of healthy equipment.
+`ts` is a Unix timestamp in milliseconds. Before ingestion, `/status` may return a null timestamp, empty values, and health UNKNOWN. That is not evidence of healthy equipment.
 
 The history limit is not constrained by the route. Use a positive number no larger than the configured history size; do not interpret this endpoint as a database history query.
 
@@ -54,7 +54,7 @@ Defaults from [anomaly_rules.py](../backend/rules/anomaly_rules.py):
 
 Environment variables are `TEMP_WARN`, `TEMP_CRIT`, `VIB_WARN`, `VIB_CRIT`, `CURR_WARN`, `CURR_CRIT`, `MIN_BELT_SPEED`, and `RPM_MIN`. They are read when the rule module is imported; restart the backend after changing them.
 
-Severity is the maximum triggered level. Missing or nonnumeric readings do not trigger numeric rules. The returned `limits` object currently omits current and RPM thresholds even though those rules run.
+Severity is the maximum triggered level. Empty values produce UNKNOWN. Partially missing or nonnumeric readings do not trigger numeric rules. The returned `limits` object includes all numeric thresholds when data is present.
 
 Example expected alert fragment for temperature 82 and vibration 4.2:
 

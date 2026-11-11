@@ -14,7 +14,7 @@ The repository models one simulated machine, `serra_01`. It contains a data prod
 | Subscriber | Polls latest readings, normally every second | Despite its filename, it does not subscribe to MQTT |
 | StateStore | Lock-protected latest state and per-device deque, default 300 entries | In-memory and process-local; restarting clears it |
 | PostgresWriter | Inserts device, timestamp, and JSONB values | No schema migration or deduplication is supplied |
-| Alert rules | Computes maximum severity from configured thresholds | Missing data does not raise an alert |
+| Alert rules | Computes maximum severity from configured thresholds | Empty data produces UNKNOWN with a NO_DATA alert |
 | Optional agent | Tools read current state, history, and rules | No trained anomaly model; no equipment control |
 | Gazebo | World/model assets and a headless Compose service | No implemented sensor-to-MQTT coupling in the named bridge |
 | Grafana | Container and persistent volume | No dashboard/data-source provisioning in this repository |

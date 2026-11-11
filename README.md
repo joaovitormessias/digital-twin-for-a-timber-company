@@ -89,12 +89,12 @@ For design choices, component status, and failure behavior, read the [architectu
 
 The documentation update checked the source and exercised the pure alert rules locally. The [demo guide](docs/simulacao.md#verification) includes repeatable assertions and manual integration criteria.
 
-Docker is unavailable in the documentation-review environment, so container startup, ThingsBoard provisioning, MQTT delivery, PostgreSQL writes, and AI responses have **not** been validated end to end in this update. No latency, accuracy, coverage, or production-use metrics are claimed. There is no committed automated test suite or CI workflow.
+Docker is unavailable in the documentation-review environment, so container startup, ThingsBoard provisioning, MQTT delivery, PostgreSQL writes, and AI responses have **not** been validated end to end in this update. No latency, accuracy, coverage, or production-use metrics are claimed. Four isolated rule tests pass with `python -m unittest discover -s tests` from the repository root. No CI workflow is included.
 
 ## Current limitations
 
 - **Synthetic behavior:** no physical sensor calibration, machine synchronization, or validated predictive model. The script named `mqtt_bridge.py` generates random telemetry; it does not consume Gazebo sensor data.
-- **Freshness and completeness:** missing readings can yield `health: "OK"`; no stale-data alarm exists. `/health` checks API responsiveness only.
+- **Freshness and completeness:** empty readings yield `health: "UNKNOWN"`; no stale-data alarm exists. `/health` checks API responsiveness only.
 - **Storage:** the Compose file does not provision `telemetry_raw`. The demo guide supplies a minimal local schema. Repeated polling can insert duplicate snapshots, and persistence errors do not stop cache updates.
 - **Deployment:** dependencies and container images are not fully pinned. Compose contains local demo credentials and exposes services; API routes have no authentication. Use a local, synthetic-data environment.
 - **Integration:** no provisioned Grafana dashboard, full Gazebo telemetry bridge, or completed ML implementation is included.
