@@ -3,3 +3,6 @@
 *venv
 *env
 
+# Python interpreter artifacts
+__pycache__/
+*.py[cod]

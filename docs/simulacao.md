@@ -151,7 +151,7 @@ check({"status": "running", "beltSpeed": 0.5}, "WARNING")
 check({"status": "stopped", "beltSpeed": 0.5}, "OK")
 check({"status": "running", "sawRpm": 2700}, "WARNING")
 check({"temperature": 82, "vibration": 5.1}, "CRITICAL")
-check({}, "OK")  # Documents a limitation: no missing-data alarm.
+check({}, "UNKNOWN")  # Missing observations are distinct from healthy equipment.
 
 example = evaluate_health({"values": {
     "temperature": 82.0, "beltSpeed": 1.8, "vibration": 4.2,
@@ -188,7 +188,7 @@ Record actual results before advertising a working demo. The last row describes 
 | REST authentication errors | Tenant credentials in the backend override; device tokens cannot replace them |
 | relation telemetry_raw does not exist | Apply the demo schema to the configured database |
 | /health is OK but state is empty | Subscriber logs and ThingsBoard; health does not probe dependencies |
-| Rules say OK with no values | Current missing-data behavior, not a successful equipment check |
+| Rules say UNKNOWN with no values | Check the publisher and subscriber logs; no observations are available |
 | Container build/start changes between runs | Unpinned dependencies and mutable images; record a validated version set |
 
 ## Stop the demo

@@ -21,7 +21,7 @@ def evaluate_health(state: Dict[str, Any]) -> Dict[str, Any]:
       {"device": "...", "ts": ..., "values": {...}}
 
     Devolve:
-      {"health": "OK|WARNING|CRITICAL", "alerts": [...], "limits": {...}}
+      {"health": "UNKNOWN|OK|WARNING|CRITICAL", "alerts": [...], "limits": {...}}
     """
     values = (state or {}).get("values", {}) or {}
 
@@ -31,6 +31,10 @@ def evaluate_health(state: Dict[str, Any]) -> Dict[str, Any]:
     status = values.get("status")
     motor_current = values.get("motorCurrent")
     saw_rpm = values.get("sawRpm")
+
+    # No observations must not be presented as healthy equipment.
+    if not values:
+        return {"health": "UNKNOWN", "alerts": [{"type": "NO_DATA", "level": "UNKNOWN"}], "limits": {}}
 
     alerts: List[Dict[str, Any]] = []
     severity = "OK"
@@ -99,5 +103,8 @@ def evaluate_health(state: Dict[str, Any]) -> Dict[str, Any]:
             "VIB_WARN": VIB_WARN,
             "VIB_CRIT": VIB_CRIT,
             "MIN_BELT_SPEED": MIN_BELT_SPEED,
+            "CURR_WARN": CURR_WARN,
+            "CURR_CRIT": CURR_CRIT,
+            "RPM_MIN": RPM_MIN,
         },
     }
